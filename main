@@ -1,0 +1,746 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+
+/*=============================================================================
+         
+=============================================================================*/
+/*******************************************************************************
+              DEFINICIONES DE TIPOS Y VARIABLES
+********************************************************************************/
+
+typedef char TipoCadenaNombre[10];   //definicion de Nombre de pacientes
+TipoCadenaNombre nombrePaciente;
+typedef struct DatosPaciente{       //definicion de la estructura de datosPaciente
+TipoCadenaNombre nombrePaciente;
+  int codigoAlmacenP;
+  int distancia;
+  float angulo;
+  int ref;
+  };
+typedef struct Farmaco{           //definicion de la estructura de Farmaco
+
+TipoCadenaNombre nombreFarmaco;
+
+TipoCadenaNombre nombreFarmaco2;
+TipoCadenaNombre nombreFarmaco3;
+TipoCadenaNombre nombreFarmaco4;
+TipoCadenaNombre nombreFarmaco5;
+int pesoFarmaco;
+int pesoFarmaco2;
+int pesoFarmaco3;
+int pesoFarmaco4;
+int pesoFarmaco5;
+int unidadesFarmaco;
+int unidadesFarmaco2;
+int unidadesFarmaco3;
+int unidadesFarmaco4;
+int unidadesFarmaco5;
+int numeroFarmaco1;
+
+int numeroFarmaco2;
+};
+typedef struct TipoPedido{        //definicion de la estructura de Pedido
+  int numeroDeEnvios;
+  int dia;
+  int mes;
+  int agno;
+  char teclaN,teclaM;
+  int refe;
+  };
+typedef char TipoCadenaFarmaco[10];     //definicion del char del farmaco
+TipoCadenaFarmaco nombreFarmaco;
+typedef char TipoDirecciones[49];
+typedef char TipoDireccionesP[17];
+
+typedef struct TipoAlmacen {
+ TipoDirecciones direccionAlmacen;
+ TipoDirecciones direccionMunicipio;
+ TipoDireccionesP direccionProvincia;
+ TipoDirecciones descripcionAlmacen;
+ int idAlmacen;
+};
+typedef TipoAlmacen almacenes[10];
+almacenes altaAlmacenes;
+
+typedef Farmaco RegistroFarmaco[5];     //definicion de vector de farmacos
+RegistroFarmaco farmaco1;
+typedef TipoPedido RegistroPedido[100];   //definicion de vector de pedidos
+RegistroPedido base2;
+typedef DatosPaciente RegistroPaciente[21]; //definicion de vector de Registros de paciente
+RegistroPaciente base;
+
+typedef struct BD{              //definicion de la estructura de datos para vincular los datos
+
+    Farmaco farmacoBD;
+    TipoCadenaFarmaco nombreFarmacoBD;
+    int referenciaPedidoBD;           //referencia de cada pedido
+    int distanciaBD;                //distancia de cada pedido
+    float anguloBD;                 //angulo de cada pedido
+    int unidadesFarmacoBD;          //unidades de farmaco
+    int pesoFarmacoBD;              //peso de cada farmaco
+    int farmacoPorPedido;           //numero de farmaco por pedido
+    int mesBD;
+    int diaBD;
+    int agnoBD;
+    int codigoAlmacen;
+  };
+typedef BD pedidos[100];
+pedidos pedido;     //vector de pedidos con la estructura BD
+
+int PesoTotalEnvio; //Variable para el calculo del peso en los pedidos
+int auxFarmacos,codigoAlmacenConsulta;    //aux para los farmacos
+int i,j,q,g,l,h,e,n,u,f,k;    //variables de contadores
+int diaConsulta,mesConsulta,agnoConsulta,continues; //variables de consulta de dia/mes/agno
+char teclaA,teclaM,tecla;
+int diaP,mesP,agnoP;
+
+/*******************************************************************************
+                                METODOS
+********************************************************************************/
+
+void ListaUbicacion(){          //metodo gestor de listar la relacion de ref, identificador, distancia y angulo
+
+printf("\n");
+printf(" Lista de pacientes y su ubicacion\n");
+
+printf("Codigo Almacen?");
+  scanf("%d", &codigoAlmacenConsulta);
+  printf("\n");
+
+printf("   Ref.  Identificador      Distancia       Angulo  \n\n");
+ for (int n=0; n<=10; n++){
+if (codigoAlmacenConsulta == base[n].codigoAlmacenP){       //if que selecciona el dia en el vector
+        printf(" ");
+
+
+
+for (int k=1; k<i; k++){      //bucle for que recorre todo el vector RegistroPacientes para listarlos por ID, identificador y distancia
+
+printf("%5d    %-20s %5d        %5f \n\n",    //lo imprimimos por pantalla
+          base[k].ref, base[k].nombrePaciente, base[k].distancia, base[k].angulo);
+
+}
+printf(" \n\n");
+
+}
+
+ }
+}
+
+void AltaNuevoPaciente(){       //metodo encargado de agregar nuevos pacientes y almacenarlos en el vector RegistroPaciente
+
+
+do{
+
+    printf(" \n");
+  printf("Codigo almacen?(entre 1-10):");
+  scanf("%d", &base[i].codigoAlmacenP);    //almacena la informacion en nombrePaciente
+  fflush(stdin);
+
+  printf(" \n");
+  printf("Introduza el identificador(entre 1 y 20 caracteres): ");
+  scanf("%[^\n]s", base[i].nombrePaciente);    //almacena la informacion en nombrePaciente
+  fflush(stdin);
+
+  base[i].ref = i;
+  printf("Introduzca la distancia(hasta 10000 metros en plena carga): ");
+  scanf("%d", &base[i].distancia);          //almacena la informacion en distancia
+  fflush(stdin);
+  if (base[i].distancia> 10000){
+
+   printf("Error|| La distancia es demasiada para la utilizacion del dron\n");
+   AltaNuevoPaciente();
+
+  }
+  printf("Introduzca el angulo (entre 0 y 2000pi/1000 radianes): ");
+  scanf("%f", &base[i].angulo);             //almacena la informacion en angulo
+  fflush(stdin);
+  fflush(stdin);
+  printf("Quiere guardar los datos? (S/N): ");     //se guardan los datos segun se quiera
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+  switch (teclaA){
+
+     case 'S':
+          i=i+1;                //se incrementa en 1 el valor del vector
+          break;
+
+     case 'N':
+      fflush(stdin);
+        break;
+default: printf(" pulse tecla correcta\n");
+    AltaNuevoPaciente();        //se reinicia si se produce error
+  }
+
+  printf("Quiere a%cadir otro registro?(S/N): ", 164);
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+   fflush(stdin);    //se limpia buffer
+  switch (teclaA){
+
+     case 'S':
+          AltaNuevoPaciente(); //se inicia de nuevo el modulo
+          break;
+
+
+   }
+  fflush(stdin);
+
+
+}while (teclaA != 'N');     //Hasta que no se lee tecla N no se sale del menu
+fflush(stdin);
+
+
+
+}
+
+
+void altaAlmacen(){       //metodo encargado de agregar nuevos almacenes y almacenarlos en el vector almacenes
+
+
+do{
+  printf(" \n");
+  printf("Identificador almacen(cod. de almacen 1 a 10)?: ");
+  scanf("%d", &altaAlmacenes[k].idAlmacen);   //almacena la informacion en nombrePaciente
+  fflush(stdin);
+
+  printf("Direcci%cn almacen?(entre 1 y 48 caracteres):", 162);
+  scanf("%[^\n]s", altaAlmacenes[k].direccionAlmacen);          //almacena la informacion en distancia
+  fflush(stdin);
+
+  printf("Municipio almacen(entre 1 y 48 caracteres):");
+  scanf("%[^\n]s", altaAlmacenes[k].direccionMunicipio);             //almacena la informacion en angulo
+  fflush(stdin);
+  printf("Provincia almacen(entre 1 y 48 caracteres):");
+  scanf("%[^\n]s", altaAlmacenes[i].direccionProvincia);             //almacena la informacion en angulo
+  fflush(stdin);
+  printf("Descripci%cn almacen(entre 1 y 48 caracteres):",162);
+  scanf("%[^\n]s", altaAlmacenes[i].descripcionAlmacen);             //almacena la informacion en angulo
+  fflush(stdin);
+
+  printf("Quiere guardar los datos? (S/N): ");     //se guardan los datos segun se quiera
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+  switch (teclaA){
+
+     case 'S':
+          k=k+1;                //se incrementa en 1 el valor del vector
+          break;
+
+     case 'N':
+      fflush(stdin);
+        break;
+default: printf(" pulse tecla correcta\n");
+    AltaNuevoPaciente();        //se reinicia si se produce error
+  }
+
+  printf("Quiere a%cadir otro registro?(S/N): ", 164);
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+   fflush(stdin);    //se limpia buffer
+  switch (teclaA){
+
+     case 'S':
+          altaAlmacen(); //se inicia de nuevo el modulo
+          break;
+
+
+   }
+  fflush(stdin);
+
+
+}while (teclaA != 'N');     //Hasta que no se lee tecla N no se sale del menu
+fflush(stdin);
+
+
+
+}
+
+
+
+
+void actualizacionPaciente(int l){   //metodo encargado de almacenar de forma segura toda la informacion obtenida.
+                                     //se utilizan dos vectores separados para almacenar la informacion.
+                                     //de los diferentes vectores para agregar informacion, todos se unifican en el vector pedido
+                                     //se pasa la referencia del paciente mediante "l"
+
+
+      pedido[h].distanciaBD=base[l].distancia;   //actualizacion de la distancia
+      pedido[h].anguloBD=base[l].angulo;          //actualizacion del angulo
+      pedido[h].diaBD=base2[q].dia;               //actualizacion de la distancia
+      fflush(stdin);
+      pedido[h].mesBD=base2[q].mes;               //actualizacion del mes
+      fflush(stdin);
+      pedido[h].agnoBD=base2[q].agno;             //actualizacion del año
+      fflush(stdin);
+      pedido[h].farmacoPorPedido=e;
+        //actualizacion de farmaco por pedido
+
+      fflush(stdin);
+
+          for (int n=0; n<=h; n++){
+
+                    };
+              h=h+1;
+
+
+      fflush(stdin);
+
+        }
+
+void ListaPedidos(int n){   //modulo para imprimir la lista de los pedidos
+
+
+
+  PesoTotalEnvio =
+                printf(" \n");
+                printf(" \n");
+                printf(" Pedido del almacen: %d\n", pedido[n].codigoAlmacen);
+                printf("       Pedido %d \n", pedido[n].referenciaPedidoBD);
+                printf("Ubicacion destino: Distancia: %d y Angulo: %f \n", pedido[u].distanciaBD, pedido[n].anguloBD);      //impresion en pantalla de la informacion de la distancia y el angulo
+
+                switch (pedido[n].farmacoPorPedido){
+                  case 1:                                                           //caso en el que solo se pide 1 farmaco por pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco,pedido[n].farmacoBD.nombreFarmaco,pedido[n].farmacoBD.pesoFarmaco); //se imprime por pantalla los datos del pedido
+                                                                      PesoTotalEnvio=pedido[n].farmacoBD.pesoFarmaco;
+                  printf("                      Peso Total del envio:      %4dGramos\n", PesoTotalEnvio);
+                  break;
+                  case 2:                                                           //caso en el que se piden 2 farmacos por pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco, pedido[n].farmacoBD.nombreFarmaco,pedido[n].farmacoBD.pesoFarmaco);//se imprime por pantalla los datos del pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco2, pedido[n].farmacoBD.nombreFarmaco2,pedido[n].farmacoBD.pesoFarmaco2);
+                                                                            PesoTotalEnvio=pedido[n].farmacoBD.pesoFarmaco+pedido[n].farmacoBD.pesoFarmaco2;
+                  printf("                      Peso Total del envio:      %4dGramos\n", PesoTotalEnvio);
+                    break;
+                  case 3:                                                           //caso en el que se piden 3 farmacos por pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco,pedido[n].farmacoBD.nombreFarmaco,pedido[n].farmacoBD.pesoFarmaco);
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco2,pedido[n].farmacoBD.nombreFarmaco2,pedido[n].farmacoBD.pesoFarmaco2);//se imprime por pantalla los datos del pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco3,pedido[n].farmacoBD.nombreFarmaco3,pedido[n].farmacoBD.pesoFarmaco3);
+                                                                           PesoTotalEnvio=pedido[n].farmacoBD.pesoFarmaco+pedido[n].farmacoBD.pesoFarmaco2+pedido[n].farmacoBD.pesoFarmaco3;
+                  printf("                      Peso Total del envio:      %4dGramos\n", PesoTotalEnvio);
+                    break;
+                  case 4:                                                           //caso en el que se piden 4 farmacos por pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco, pedido[n].farmacoBD.nombreFarmaco,pedido[n].farmacoBD.pesoFarmaco);
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco2, pedido[n].farmacoBD.nombreFarmaco2,pedido[n].farmacoBD.pesoFarmaco2);//se imprime por pantalla los datos del pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco3,pedido[n].farmacoBD.nombreFarmaco3,pedido[n].farmacoBD.pesoFarmaco3);
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco4,pedido[n].farmacoBD.nombreFarmaco4,pedido[n].farmacoBD.pesoFarmaco4);
+                                                                            PesoTotalEnvio=pedido[n].farmacoBD.pesoFarmaco+pedido[n].farmacoBD.pesoFarmaco2+pedido[n].farmacoBD.pesoFarmaco3
+                                                                            +pedido[n].farmacoBD.pesoFarmaco4;
+                  printf("                      Peso Total del envio:      %4dGramos\n", PesoTotalEnvio);
+                    break;
+                  case 5:
+                                                                                      //caso en el que se piden 5 farmacos por pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco, pedido[n].farmacoBD.nombreFarmaco,pedido[n].farmacoBD.pesoFarmaco);
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco2, pedido[n].farmacoBD.nombreFarmaco2,pedido[n].farmacoBD.pesoFarmaco2);
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco3,pedido[n].farmacoBD.nombreFarmaco3,pedido[n].farmacoBD.pesoFarmaco3);//se imprime por pantalla los datos del pedido
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco4,pedido[n].farmacoBD.nombreFarmaco4,pedido[n].farmacoBD.pesoFarmaco4);
+                  printf(" %2d Unidades          %-20s Peso: %4dGramos\n", pedido[n].farmacoBD.unidadesFarmaco5,pedido[n].farmacoBD.nombreFarmaco5,pedido[n].farmacoBD.pesoFarmaco5);
+                                                                            PesoTotalEnvio=pedido[n].farmacoBD.pesoFarmaco+pedido[n].farmacoBD.pesoFarmaco2+pedido[n].farmacoBD.pesoFarmaco3
+                                                                            +pedido[n].farmacoBD.pesoFarmaco4+pedido[n].farmacoBD.pesoFarmaco5;
+                  printf("                      Peso Total del envio:      %4dGramos\n", PesoTotalEnvio);
+                    break;
+
+
+
+}}
+
+
+void Consulta(){       //modulo para comprobar si los dias, meses y años existen como pedido
+
+  int diaConsulta;
+  int mesConsulta;
+  int agnoConsulta;  //inicio de las variables de de consulta
+
+  int auxDia;
+  int auxMes;
+  int auxAgno;
+  auxAgno = 0;
+  auxMes = 0;
+  auxDia = 1;
+
+
+  printf("Lista diaria de pedidos\n\n");
+  printf("Codigo Almacen?");
+  scanf("%d", &codigoAlmacenConsulta);
+  printf("\n");
+  printf(" Dia?");
+  scanf("%d", &diaConsulta);      //se introduce el dia a consulta
+  fflush(stdin);
+  printf("Mes?");
+  scanf("%d", &mesConsulta);      //se introduce el mes a consulta
+  fflush(stdin);
+  printf("Año?");
+  scanf("%d", &agnoConsulta);     //se introduce el año a consulta
+  fflush(stdin);
+
+
+
+  for (int n=0; n<=100; n++){       //bucle que busca los datos en el vector pedido
+
+
+
+ if (codigoAlmacenConsulta == pedido[n].codigoAlmacen){       //if que selecciona el dia en el vector
+        printf(" ");
+        auxDia=n;
+        printf("%d", auxDia);
+
+   if (diaConsulta == pedido[n].diaBD){       //if que selecciona el dia en el vector
+        printf(" ");
+        auxDia=n;
+        printf("%d", auxDia);
+          if (mesConsulta == pedido[n].mesBD){      //if que selecciona el mes en el vector, teniendo en cuanta el dia
+            printf(" ");
+            auxMes=n;
+            printf("%d", auxMes);
+              if (agnoConsulta == pedido[n].agnoBD){      //if que selecciona el agno en el vector, teniendo en cuanta el dia y el mes.
+                printf(" ");
+                auxDia=n;
+                  printf("%d", auxAgno);
+                    ListaPedidos(n);                      //Llamada a ListaPedidos para listar los pedidos segun la seleccion del dia,  mes y agno
+              }
+
+            }
+           }
+          }}
+
+
+
+          printf("Volver menu?");
+          scanf("%d", &continues);
+
+}
+
+
+void farmacos(){  //Metodo para introducir los 5 farmacos por pedido
+int pesoDronTotal;
+int pesoDronFarmaco;
+
+  do {
+  e=1;      //se inicia el contador de farmacos
+
+  printf("Nombre del farmaco (entre 1 y 20 caracteres):\n");   //introducir los datos del farmaco1
+  scanf("%9s", pedido[h].farmacoBD.nombreFarmaco);
+
+  fflush(stdin);
+  printf("Peso del farmaco?(menor 3000 gramos):\n");
+  scanf("%d", &pedido[h].farmacoBD.pesoFarmaco);
+  fflush(stdin);
+  printf("Unidades del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.unidadesFarmaco);
+  fflush(stdin);
+  pesoDronTotal = (pedido[h].farmacoBD.unidadesFarmaco*pedido[h].farmacoBD.pesoFarmaco);  //realiza el calculo del peso por pedido
+  if (pesoDronTotal>=3001){                                                               //soportado por el dron
+      printf("Error || Demasiada carga para el dron\n");
+      printf("Vuelva a introducir los Farmacos\n");
+      farmacos();  }
+pedido[h].farmacoPorPedido=e;
+  printf("Otro farmaco?(S/N): ");
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+switch (teclaA){                    //se desea añadir otro farmaco??
+   case 'S':                         //introducir los datos del farmaco2
+    e=e+1;                           //actualiza el contador
+    printf("Nombre del farmaco\n");
+  scanf("%9s", pedido[h].farmacoBD.nombreFarmaco2);
+
+  fflush(stdin);
+  printf("Peso del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.pesoFarmaco2);
+  fflush(stdin);
+  printf("Unidades del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.unidadesFarmaco2);
+  fflush(stdin);
+  pesoDronFarmaco = (pedido[h].farmacoBD.unidadesFarmaco2*pedido[h].farmacoBD.pesoFarmaco2);    //realiza el calculo del peso por pedido
+  pesoDronTotal = pesoDronFarmaco + pesoDronFarmaco;                                            //soportado por el dron
+  if (pesoDronTotal>=3001){
+      printf("Error || Demasiada carga para el dron\n");
+      printf("Vuelva a introducir los Farmacos\n");
+      farmacos();  }
+
+pedido[h].farmacoPorPedido=e;
+   printf("Otro farmaco?(S/N): ");
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+switch (teclaA){         //se desea añadir otro farmaco??
+                            //introducir los datos del farmaco3
+                            //actualiza el contador
+   case 'S':
+   e=e+1;
+   printf("Nombre del farmaco\n");
+  scanf("%9s", pedido[h].farmacoBD.nombreFarmaco3);
+
+  fflush(stdin);
+  printf("Peso del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.pesoFarmaco3);
+  fflush(stdin);
+  printf("Unidades del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.unidadesFarmaco3);
+  fflush(stdin);
+    pesoDronFarmaco = (pedido[h].farmacoBD.unidadesFarmaco3*pedido[h].farmacoBD.pesoFarmaco3);        //realiza el calculo del peso por pedido
+  pesoDronTotal = pesoDronFarmaco + pesoDronFarmaco;                                                   //soportado por el dron
+  if (pesoDronTotal>=3001){
+      printf("Error || Demasiada carga para el dron\n");
+      printf("Vuelva a introducir los Farmacos\n");
+      farmacos();  }
+
+ pedido[h].farmacoPorPedido=e;
+    printf("Otro farmaco?(S/N): ");
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+switch (teclaA){
+                            //se desea añadir otro farmaco??
+                           //introducir los datos del farmaco4
+                            //actualiza el contador
+   case 'S':
+  e=e+1;
+   printf("Nombre del farmaco\n");
+  scanf("%9s", pedido[h].farmacoBD.nombreFarmaco4);
+
+  fflush(stdin);
+  printf("Peso del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.pesoFarmaco4);
+  fflush(stdin);
+  printf("Unidades del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.unidadesFarmaco4);
+  fflush(stdin);
+  pesoDronFarmaco = (pedido[h].farmacoBD.unidadesFarmaco4*pedido[h].farmacoBD.pesoFarmaco4);      //realiza el calculo del peso por pedido
+  pesoDronTotal = pesoDronFarmaco + pesoDronFarmaco;                                              //soportado por el dron
+  if (pesoDronTotal>=3001){
+      printf("Error || Demasiada carga para el dron\n");
+      printf("Vuelva a introducir los Farmacos\n");
+      farmacos();  }
+
+
+pedido[h].farmacoPorPedido=e;
+    printf("Otro farmaco?(S/N): ");
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+
+switch (teclaA){                  //se desea añadir otro farmaco??
+                                //introducir los datos del farmaco2
+                                //actualiza el contador
+   case 'S':
+  e=e+1;
+   printf("Nombre del farmaco\n");
+  scanf("%9s", pedido[h].farmacoBD.nombreFarmaco5);
+
+  fflush(stdin);
+  printf("Peso del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.pesoFarmaco5);
+  fflush(stdin);
+  printf("Unidades del farmaco\n");
+  scanf("%d", &pedido[h].farmacoBD.unidadesFarmaco5);
+  fflush(stdin);
+  pesoDronFarmaco = (pedido[h].farmacoBD.unidadesFarmaco5*pedido[h].farmacoBD.pesoFarmaco5);      //realiza el calculo del peso por pedido
+  pesoDronTotal = pesoDronFarmaco + pesoDronFarmaco;                                              //soportado por el dron
+  if (pesoDronTotal>=3001){
+      printf("Error || Demasiada carga para el dron\n");
+      printf("Vuelva a introducir los Farmacos\n");
+      farmacos();  }
+
+
+pedido[h].farmacoPorPedido=e;
+   printf("Otro farmaco?(S/N): ");
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+
+   break;
+
+}break;}break;}break;}
+
+  pedido[h].farmacoPorPedido=e;     //Variable farmaco por pedido para conocer los farmacos por pedido
+
+  //printf(" el numero de farmacos es %d\n", pedido[h].farmacoPorPedido);
+
+
+
+  }while(teclaA != 'N');      //hasta que no se pulsa N no se sale del menu de farmacos
+
+}
+
+
+void AltaNuevoPedido(){    //Metodo para agregar un nuevo pedido
+typedef char TipoCadenaFarmaco[10];   //se utiliza para el string de nombre de Farmacos
+
+do{
+
+
+
+  printf("Nuevo pedido: \n\n ");
+  printf(" \n\n");
+  printf("Codigo almacen?: ");
+  scanf("%d", &pedido[h].codigoAlmacen);
+
+  printf("\n\n");
+  printf("Ref. Paciente(entre 1 y 20): ");
+  scanf("%d", &l);                    //se guarda la referencia del paciente
+                                //contador de pedidos
+  pedido[h].referenciaPedidoBD=q;     //se fija la referencia del pedido mediante el contador
+  farmaco1[h].numeroFarmaco1=pedido[h].farmacoPorPedido;
+
+
+  printf("Numero de envios? ");
+  scanf("%d", &base2[q].numeroDeEnvios);      //se guarda el numero de envios
+  fflush(stdin);
+
+  printf("Introduzca el dia(entre 1 y 31): ");
+  scanf("%d", &base2[q].dia);                     //se guarda el dia
+  if (base2[q].dia >= 31 || base2[q].dia == 0){  //se valida la introduccion de datos
+    printf("error en la introduccion de datos");
+    AltaNuevoPedido();}
+
+  fflush(stdin);
+  printf("Introduzca el mes(entre 1 y 12): ");
+
+  scanf("%d", &base2[q].mes);                     //se guarda el mes
+  if (base2[q].mes >= 13 || base2[q].mes == 0){   //se valida la introduccion de datos
+    printf("error en la introduccion de datos");
+    AltaNuevoPedido();}
+
+  fflush(stdin);
+  printf("Introduzca el a%co:(2000 - 2045) ", 164);
+  scanf("%d", &base2[q].agno);                            //se guarda el agno
+  if (base2[q].agno <= 1999 || base2[q].agno >= 2045){    //se valida la introduccion de datos
+    printf("error en la introduccion de datos");
+    AltaNuevoPedido();}
+  fflush(stdin);
+
+  farmacos();       //se inicia el modulo de farmacos para introducir hasta 5 farmacos diferentes por pedido
+
+  printf("Quiere guardar los datos?");
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+
+  switch (teclaA){
+
+     case 'S':
+
+
+          actualizacionPaciente(l);    //se actualiza el paciente en la base de datos general para tener toda la informacion en un Vector de BD
+           q=q+1;                      //se actualiza el contador para un nuevo pedido (se guardan los datos)
+
+
+
+          break;
+
+     case 'N':
+        break;
+
+  }
+   printf("\n");
+  printf("Otro pedido?(S/N): ");    //se quiere hacer otro pedido??
+  scanf("%c", &teclaA);
+  teclaA = toupper(teclaA);
+  fflush(stdin);
+    switch (teclaA){
+
+     case 'S':
+     AltaNuevoPedido();
+     break;}
+
+}while (teclaA != 'N');         //se sigue ejecutando el bucle hasta que no se presiona N
+fflush(stdin);
+
+
+
+}
+
+
+void InterfazMenu(){    //interfaz menu
+
+    do{
+    do{
+
+    printf("GESTI%CN DE FarmaDrones: Distribuci%cn de Farmacos con Dron\n", 162,162);
+    printf("    Iniciar gesti%cn                     (Pulsar I)\n", 162);
+    printf("    Alta almacen                         (Pulsar M)\n");
+    printf("    Alta paciente almacen                (Pulsar A)\n");
+    printf("    Ubicar pacientes                     (Pulsar U)\n");
+    printf("    Nuevo pedido                         (Pulsar N)\n");
+    printf("    Lista diaria de pedidos              (Pulsar L)\n");
+    printf("    Calendario mensual de pedidos        (Pulsar C)\n");
+    printf("    Salir                                (Pulsar S)\n");
+    printf("Teclea una opcion v%clida (A|U|N|L|C|S)? \n\n", 160);
+
+
+    scanf(" %c", &tecla);
+    tecla = toupper(tecla);  //Convierte la tecla en mayuscula
+        switch (tecla){
+    case 'A':           //seleccion de alta nueva de pacientes
+          fflush(stdin);
+         printf("\n");
+          AltaNuevoPaciente();
+          break;
+    case 'M':           //seleccion de alta almacen
+          fflush(stdin);
+         printf("\n");
+          altaAlmacen();
+          break;
+    case 'U':             //Lista a seleccion de menu para Ubicar Pacientes
+          system("cls");
+          ListaUbicacion();
+
+          break;
+    case 'N':             //Selecciona para nuevo pedido
+          printf("\n");
+          AltaNuevoPedido();
+          break;
+    case 'L':
+
+          Consulta();     //Selecciona la lista diaria de pedidos
+
+
+
+          break;
+    case 'C':
+
+
+
+
+
+        break;
+    case 'S':
+        exit (-1);
+
+
+    break;
+
+
+
+default: printf(" pulse tecla correcta\n");
+    }
+
+
+
+      }while (tecla != 'N');
+
+        printf(" ¿Quiere salir??\n");
+        scanf(" %c", &tecla);
+        tecla = toupper(tecla);     //Convierte la tecla en mayuscula
+        }while (tecla !='S');
+
+}
+
+
+int main(){    //Main del programa con la ejecucion de la interfaz del menu
+  h = 0;       //Iniciando contadores tanto de Pacientes como de farmacos y pedidos
+  i = 1;
+  q = 1;
+  do{
+InterfazMenu();
+InterfazMenu();
+InterfazMenu();
+
+  }while (teclaM !='S');  //Con la tecla S sale del bucle de InterfazMenu
+   return 0;
+}
